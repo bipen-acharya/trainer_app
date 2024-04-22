@@ -35,7 +35,7 @@ class LogInController extends GetxController {
           final box = GetStorage();
           await box.write(StorageKeys.USER, json.encode(user.toJson()));
           Get.find<CoreController>().loadCurrentUser();
-          Get.offAll(() => const HomeScreen());
+          Get.offAll(() => HomeScreen());
           CustomSnackBar.success(title: "Login", message: "Login Successfull");
         },
         onError: (message) {

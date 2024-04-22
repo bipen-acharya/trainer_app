@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:trainer_app/controller/dashboard/home_screen_controller.dart';
+import 'package:trainer_app/models/users.dart';
 import 'package:trainer_app/utils/colors.dart';
 import 'package:trainer_app/utils/custom_text_style.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({
+  HomeScreen({
     super.key,
   });
+
+  final c = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,42 +39,42 @@ class HomeScreen extends StatelessWidget {
 
                 // child: Text('Drawer Header'),
               ),
-              ProfileTile(
-                onTap: () {
-                  Get.back();
-                  // Get.toNamed(EditProfileScreen.routeName);
-                },
-                leadingIcon: Icons.person_2_outlined,
-                title: "Edit Profile",
-                showTrailing: false,
-              ),
-              ProfileTile(
-                onTap: () {
-                  Get.back();
-                  // Get.toNamed(FavoritesScreen.routeName);
-                },
-                leadingIcon: Icons.favorite_border,
-                title: "Favorites",
-                showTrailing: false,
-              ),
-              ProfileTile(
-                onTap: () {
-                  Get.back();
-                  // Get.toNamed(ChangeThemeScreen.routeName);
-                },
-                leadingIcon: Icons.brightness_6_outlined,
-                title: "Theme",
-                showTrailing: false,
-              ),
-              ProfileTile(
-                onTap: () {
-                  Get.back();
-                  // Get.toNamed(ChangePasswordScreen.routeName);
-                },
-                leadingIcon: Icons.lock_outline,
-                title: "Change Password",
-                showTrailing: false,
-              ),
+              // ProfileTile(
+              //   onTap: () {
+              //     Get.back();
+              //     // Get.toNamed(EditProfileScreen.routeName);
+              //   },
+              //   leadingIcon: Icons.person_2_outlined,
+              //   title: "Edit Profile",
+              //   showTrailing: false,
+              // ),
+              // ProfileTile(
+              //   onTap: () {
+              //     Get.back();
+              //     // Get.toNamed(FavoritesScreen.routeName);
+              //   },
+              //   leadingIcon: Icons.favorite_border,
+              //   title: "Favorites",
+              //   showTrailing: false,
+              // ),
+              // ProfileTile(
+              //   onTap: () {
+              //     Get.back();
+              //     // Get.toNamed(ChangeThemeScreen.routeName);
+              //   },
+              //   leadingIcon: Icons.brightness_6_outlined,
+              //   title: "Theme",
+              //   showTrailing: false,
+              // ),
+              // ProfileTile(
+              //   onTap: () {
+              //     Get.back();
+              //     // Get.toNamed(ChangePasswordScreen.routeName);
+              //   },
+              //   leadingIcon: Icons.lock_outline,
+              //   title: "Change Password",
+              //   showTrailing: false,
+              // ),
               ProfileTile(
                 onTap: () {},
                 leadingIcon: Icons.logout,
@@ -124,9 +128,8 @@ class HomeScreen extends StatelessWidget {
                       child: SizedBox(
                         height: Get.height / 2.2,
                         width: Get.width / 1.1,
-                        child: const Image(
-                          image: NetworkImage(
-                              "https://d2v5dzhdg4zhx3.cloudfront.net/web-assets/images/storypages/short/linkedin-profile-picture-maker/dummy_image/thumb/004.webp"),
+                        child: Image(
+                          image: NetworkImage(c.user.value!.photo ?? ""),
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -156,25 +159,25 @@ class HomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Name : kjdkasjd jkl jasdlkjasd",
+                                  "Name: ${(c.user.value!.name ?? "")}",
                                   style: CustomTextStyles.f16W400(),
                                 ),
                                 Text(
-                                  "Name : kjdkasjd jkl jasdlkjasd",
+                                  "Email: ${(c.user.value!.name ?? "")}",
                                   style: CustomTextStyles.f16W400(),
                                 ),
                                 Text(
-                                  "Name : kjdkasjd jkl jasdlkjasd",
+                                  "Cost: ${(c.user.value!.costPerMonth ?? "")}",
                                   style: CustomTextStyles.f16W400(),
                                 ),
                                 Text(
-                                  "Name : kjdkasjd jkl jasdlkjasd",
+                                  "Experince: ${(c.user.value!.experience ?? "")}",
                                   style: CustomTextStyles.f16W400(),
                                 ),
-                                Text(
-                                  "Name : kjdkasjd jkl jasdlkjasd",
-                                  style: CustomTextStyles.f16W400(),
-                                ),
+                                // Text(
+                                //   "Name : kjdkasjd jkl jasdlkjasd",
+                                //   style: CustomTextStyles.f16W400(),
+                                // ),
                               ],
                             )),
                         // Positioned(
@@ -206,7 +209,23 @@ class HomeScreen extends StatelessWidget {
                 style: CustomTextStyles.f18W600(),
               ),
             ),
-            const ClientListCard(),
+            Obx(
+              () => (c.loading.value)
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      // height: 100,
+                      child: ListView.builder(
+                          // scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: c.user.value!.bookings!.data!.length,
+                          itemBuilder: (context, index) {
+                            Data data = c.user.value!.bookings!.data![index];
+                            return ClientListCard(
+                              book: data,
+                            );
+                          }),
+                    ),
+            ),
           ],
         ));
   }
@@ -254,8 +273,10 @@ class ProfileTile extends StatelessWidget {
 class ClientListCard extends StatelessWidget {
   const ClientListCard({
     Key? key,
+    required this.book,
   }) : super(key: key);
 
+  final Data book;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -300,14 +321,18 @@ class ClientListCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "asdasd",
+                      "Client id: ${book.clientId.toString()}",
                       style: CustomTextStyles.f16W400(),
                     ),
                     const SizedBox(
                       height: 3,
                     ),
                     Text(
-                      "rollNo",
+                      "From: ${book.from ?? ""}",
+                      style: CustomTextStyles.f16W400(),
+                    ),
+                    Text(
+                      "To: ${book.to ?? ""}",
                       style: CustomTextStyles.f16W400(),
                     ),
                   ],

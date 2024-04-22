@@ -1,8 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:trainer_app/controller/core_controller.dart';
+import 'package:trainer_app/models/users.dart';
 
 class HomeScreenController extends GetxController {
+    Rxn<User> user = Rxn<User>();
+     final coreController = Get.find<CoreController>();
+  RxBool loading = false.obs;
+
+  @override
+  void onInit() {
+    loadUser();
+    super.onInit();
+  }
+
+  void loadUser() {
+    user.value = coreController.currentUser.value;
+  }
   final keys = GlobalKey<ScaffoldState>();
 
   RxInt selectedIndex = 1.obs;
@@ -35,13 +50,7 @@ class HomeScreenController extends GetxController {
                 )),
           ))
       .toList();
+
+
 }
 
-class TravelCategory {
-  final int id;
-  final String name;
-  TravelCategory({
-    required this.id,
-    required this.name,
-  });
-}

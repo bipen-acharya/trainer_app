@@ -11,7 +11,7 @@ class SplashScreenController extends GetxController {
   void onInit() {
     Timer(const Duration(seconds: 2), () async {
       if (c.isUserLoggedIn()) {
-        Get.offAll(() => const HomeScreen());
+        Get.offAll(() =>  HomeScreen());
       } else {
         Get.offAll(() => LogInScreen());
       }
